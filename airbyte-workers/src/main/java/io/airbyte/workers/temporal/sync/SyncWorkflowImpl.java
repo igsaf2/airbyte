@@ -49,7 +49,6 @@ public class SyncWorkflowImpl implements SyncWorkflow {
   private static final int NORMALIZATION_SUMMARY_CHECK_CURRENT_VERSION = 1;
   private static final String AUTO_DETECT_SCHEMA_TAG = "auto_detect_schema";
   private static final int AUTO_DETECT_SCHEMA_VERSION = 2;
-
   @TemporalActivityStub(activityOptionsBeanName = "longRunActivityOptions")
   private ReplicationActivity replicationActivity;
   @TemporalActivityStub(activityOptionsBeanName = "longRunActivityOptions")
@@ -62,7 +61,7 @@ public class SyncWorkflowImpl implements SyncWorkflow {
   private NormalizationSummaryCheckActivity normalizationSummaryCheckActivity;
   @TemporalActivityStub(activityOptionsBeanName = "shortActivityOptions")
   private WebhookOperationActivity webhookOperationActivity;
-  @TemporalActivityStub(activityOptionsBeanName = "shortActivityOptions")
+  @TemporalActivityStub(activityOptionsBeanName = "discoveryActivityOptions")
   private RefreshSchemaActivity refreshSchemaActivity;
   @TemporalActivityStub(activityOptionsBeanName = "shortActivityOptions")
   private ConfigFetchActivity configFetchActivity;
@@ -93,7 +92,11 @@ public class SyncWorkflowImpl implements SyncWorkflow {
 
       if (!sourceId.isEmpty() && refreshSchemaActivity.shouldRefreshSchema(sourceId.get())) {
         LOGGER.info("Refreshing source schema...");
-        refreshSchemaActivity.refreshSchema(sourceId.get(), connectionId);
+        try {
+          refreshSchemaActivity.refreshSchema(sourceId.get(), connectionId);
+        } catch (final Exception e) {
+          return SyncOutputProvider.getRefreshSchemaFailure(e);
+        }
       }
 
       final Optional<ConnectionStatus> status = configFetchActivity.getStatus(connectionId);
