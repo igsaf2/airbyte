@@ -178,6 +178,10 @@ public class DatabricksAzureBlobStorageStreamCopier extends DatabricksStreamCopi
         columnType = "string";
       }
 
+      if (columnType.equals("integer")) {
+        columnType = "long";
+      }
+
       schemaString.append(", `").append(header).append("` ").append(columnType.equals("number") ? "double" : columnType);
     }
     return schemaString.toString();
