@@ -127,3 +127,5 @@ additional_fields = (
     "rejected_reason",
     "rejected_reason_value",
 )
+
+additional_fields_organic_inapp = tuple(f for f in additional_fields if f != "is_lat")

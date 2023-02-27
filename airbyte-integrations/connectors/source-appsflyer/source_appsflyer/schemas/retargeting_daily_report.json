@@ -40,6 +40,9 @@
     },
     "average_ecpi": {
       "type": ["null", "number"]
+    },
+    "other": {
+      "type": ["null", "other"]
     }
   }
 }
